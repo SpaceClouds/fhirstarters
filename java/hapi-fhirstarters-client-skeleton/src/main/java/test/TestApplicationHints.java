@@ -16,7 +16,7 @@ public class TestApplicationHints {
 	 */
 	
 	public static void main(String[] args) {
-//		step1_read_a_resource();
+		step1_read_a_resource();
 //		step2_search_for_patients_named_test();
 //		step3_create_patient();
 	}

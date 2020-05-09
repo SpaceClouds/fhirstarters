@@ -2,7 +2,11 @@ package test;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.gclient.StringClientParam;
+import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Patient;
+
+import javax.swing.*;
 
 public class TestApplication {
 
@@ -11,18 +15,44 @@ public class TestApplication {
     */
    public static void main(String[] args) {
 
+      JFrame frame = new JFrame();
+      frame.setSize(500, 500);
+
+
+
+
+      frame.setVisible(true);
       // Create a context
       FhirContext ctx = FhirContext.forR4();
 
+      System.out.println("point 1");
+
       // Create a client
-      IGenericClient client = ctx.newRestfulGenericClient("http://fhirtest.uhn.ca/baseR4");
+      IGenericClient client = ctx.newRestfulGenericClient("https://fhir.monash.edu/hapi-fhir-jpaserver/fhir/");
+
+      System.out.println("point 2");
 
       // Read a patient with the given ID
-      Patient patient = client.read().resource(Patient.class).withId("example").execute();
+      Patient patient = client.read().resource(Patient.class).withId("8883594").execute();
+
+      System.out.println("point 3");
 
       // Print the output
       String string = ctx.newJsonParser().setPrettyPrint(true).encodeResourceToString(patient);
+
+      System.out.println(patient.getName().toString());
+
       System.out.println(string);
+/*
+     Bundle bundle = (Bundle) client
+        .search().forResource(Patient.class)
+        .where(new StringClientParam("family").matchesExactly().value("Wisoky380"))
+        .execute();
+
+      System.out.println(ctx.newXmlParser().setPrettyPrint(true).encodeResourceToString(bundle));
+
+
+ */
 
 		/*
        * Some more things to try:

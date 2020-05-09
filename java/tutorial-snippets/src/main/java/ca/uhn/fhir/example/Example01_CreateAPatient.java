@@ -1,4 +1,4 @@
-package ca.uhn.fhir.example;
+package main.java.ca.uhn.fhir.example;
 
 import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.Identifier;
