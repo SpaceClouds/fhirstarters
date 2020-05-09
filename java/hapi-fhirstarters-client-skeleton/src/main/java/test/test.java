@@ -1,16 +1,15 @@
 package test;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 /*from   w w w. j a  v a  2 s  .c om*/
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 public class test {
 
@@ -18,6 +17,37 @@ public class test {
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     apicall call = new apicall();
+
+    DefaultTableModel model = new DefaultTableModel();
+    DefaultListModel listModel = new DefaultListModel();
+
+    model.addColumn("Name");
+    model.addColumn("Total Cholesterol");
+    model.addColumn("Time");
+
+    String[] temp = {"Birthday: ", "Gender: ", "Address: "};
+
+    JList expandedInfo = new JList(listModel);
+
+    listModel.addElement(temp[0]);
+    listModel.addElement(temp[1]);
+    listModel.addElement(temp[2]);
+
+
+    JTable table = new JTable(model);
+
+    table.setRowSelectionAllowed(true);
+    table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+       @Override
+       public void valueChanged(ListSelectionEvent e) {
+          listModel.clear();
+          listModel.addElement("Birthday: " + table.getValueAt(table.getSelectedRow(), 0) + "'s someBirthday");
+          listModel.addElement("Gender: " + table.getValueAt(table.getSelectedRow(), 0) + "'s someGender");
+          listModel.addElement("Address: " + table.getValueAt(table.getSelectedRow(), 0) + "'s someAddress");
+          frame.pack();
+       }
+    });
+    table.setBounds(200, 200, 200, 300);
 
     JList list = new JList(call.getList());
     list.setCellRenderer(new CheckListRenderer());
@@ -31,11 +61,36 @@ public class test {
         CheckListItem item = (CheckListItem) list.getModel()
             .getElementAt(index);
         item.setSelected(!item.isSelected()); // Toggle selected state
+         if (item.isSelected() == true){
+            //get patient data
+            model.addRow(new Object[]{item.toString(), "100 mg/dL", "some time"});
+         }
+         else
+         {
+            int tempInt = 0;
+            for (int i = 0; i < model.getRowCount(); i += 1)
+            {
+               if (item.toString() == model.getValueAt(i, 0))
+               {
+                  //assume that patients all have unique names
+                  tempInt = i;
+                  break;
+               }
+            }
+            model.removeRow(tempInt);
+         }
+
+
         list.repaint(list.getCellBounds(index, index));// Repaint cell
          System.out.println("ha gay" + index);
       }
     });
+    frame.getContentPane().setLayout(new FlowLayout());
     frame.getContentPane().add(new JScrollPane(list));
+    frame.getContentPane().add(new JScrollPane(table));
+    JScrollPane expandedPane = new JScrollPane(expandedInfo);
+    frame.getContentPane().add(expandedPane);
+    frame.setSize(1000, 500);
     frame.pack();
     frame.setVisible(true);
   }
